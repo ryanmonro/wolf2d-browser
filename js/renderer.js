@@ -236,7 +236,6 @@ Wolf.Renderer = (function() {
         }
 
         drawWalls(viewport, level);
-        // drawDoors();
         drawSprites(viewport, level, visibleTiles);
     }
     
@@ -360,7 +359,6 @@ Wolf.Renderer = (function() {
             texture = proc.vert ? level.wallTexX[x][y] : level.wallTexY[x][y],
             textureSrc;
         
-        
         // door sides
         if (tracePoint.flags & TRACE_HIT_VERT) {
             if (x >= vx && tileMap[x-1][y] & DOOR_TILE) {
@@ -389,8 +387,6 @@ Wolf.Renderer = (function() {
         
         updateSlice(n, textureSrc, proc);
     }
-
-    // function drawDoors()
     
     function drawDoor(n, viewport, tracePoint, level) {
         var proc = processTrace(viewport, tracePoint),
