@@ -322,9 +322,7 @@ Wolf.Renderer = (function() {
                     continue;
                 }
                 if(door !== 0 && door.action !== 2){
-                    // console.log(door);
                     if (Math.abs(door.action) == 1) {
-                        console.log(door);
                         img.css({
                             left: -(door.ticcount) + "px"
                         });
