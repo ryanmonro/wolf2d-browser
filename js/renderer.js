@@ -299,6 +299,8 @@ Wolf.Renderer = (function() {
             yTileStart = yBjTile - Math.ceil(yTiles / 2),
             textureSrc = "art/walls-shaded/64/walls.png";
 
+        var xBjTileFrac = (viewport.x - (xBjTile << Wolf.TILESHIFT)) / Wolf.TILEGLOBAL,
+            yBjTileFrac = (viewport.y - (yBjTile << Wolf.TILESHIFT)) / Wolf.TILEGLOBAL;
         // apply textures to walls surrounding BJ 
         for(var y=0; y <= yTiles; y++){
             for(var x=0; x <= xTiles; x++){
@@ -311,6 +313,8 @@ Wolf.Renderer = (function() {
                     left: "0px",
                 });
                 img.parent().css({
+                    top: (yTiles - y + yBjTileFrac - 0.62) * 64 + "px",
+                    left: (x - xBjTileFrac - 0.125) * 64 + "px",
                     transform: ""
                 });
                 if (levelX < 0 || levelX >= 64 || levelY < 0 || levelY >= 64) {
@@ -413,6 +417,8 @@ Wolf.Renderer = (function() {
             div, image,
             divStyle, imgStyle;
 
+        // console.log(level.sprites.length);
+        // return;
       
         // build visible sprites list
         visibleSprites = Wolf.Sprites.createVisList(viewport, level, visibleTiles);

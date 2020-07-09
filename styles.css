@@ -113,7 +113,8 @@ body {
 
 #game *,
 #game .renderer div,
-#game .renderer div img,
+#gam
+border: white 1px solid;e .renderer div img,
 #game .renderer .sprite,
 #game .renderer .sprite img {
     image-rendering : optimizeSpeed;
@@ -207,6 +208,7 @@ body {
 #map .bj {
     top: 50%;
     left: 50%;
+    border: white 1px solid;
     /*display: none;*/
     margin-left: -24px;
     margin-top: -32px;
