@@ -480,9 +480,13 @@ Wolf.Game = (function() {
                 y : player.position.y,
                 angle : player.angle
             };
+
+        // console.log(player.angle);
         
         var res = Wolf.Raycaster.traceRays(viewport, level);
-        
+        // var visibles = 0;
+        // res.visibleTiles.forEach((r)=>r.forEach((t)=>t && visibles++))
+        // console.log(visibles);
         Wolf.Renderer.clear();
         Wolf.Renderer.draw(viewport, level, res.tracers, res.visibleTiles);
     }

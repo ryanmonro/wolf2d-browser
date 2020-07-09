@@ -41,6 +41,7 @@ Wolf.setConsts({
 Wolf.Renderer = (function() {
     
     var slices = [],
+        tiles = [],
         useBackgroundImage = Wolf.ISWEBKIT,
         texturePath = "art/walls-shaded/" + Wolf.TEXTURERESOLUTION + "/",
         spritePath = "art/sprites/" + Wolf.TEXTURERESOLUTION + "/",
@@ -73,7 +74,7 @@ Wolf.Renderer = (function() {
         sqrt = Math.sqrt;
 
     function init() {
-        var image, slice, x;
+        var image, slice, x, y;
         if (hasInit) {
             return;
         }
@@ -82,7 +83,7 @@ Wolf.Renderer = (function() {
         $("#game .renderer")
             .width(Wolf.XRES + "px")
             .height(Wolf.YRES + "px");
-            
+
         for (x=0; x<Wolf.XRES; x += Wolf.SLICE_WIDTH) {
             slice = $("<div>");
             slice.css({
@@ -110,6 +111,43 @@ Wolf.Renderer = (function() {
             sliceElement.texture = image[0];
             sliceElement.appendChild(sliceElement.texture);
             slices.push(sliceElement);
+        }
+
+        $("#map")
+            .width(Wolf.XRES + "px")
+            .height(Wolf.YRES + "px");
+        // // here we need to make an array of tiles that will hold textures/sprites
+
+        var xTiles = Math.ceil(XRES / 64),
+            yTiles = Math.ceil(YRES / 64);
+        
+        // here we need to make an array of tiles that will hold textures/sprites
+        for(var y=0; y <= yTiles; y++){
+            var row = [];
+            for(var x=0; x <= xTiles; x++){
+                var tile = $("<div>");
+                tile.css({
+                    position : "absolute",
+                    width : "64px",
+                    height : "64px",
+                    left : x * 64 + "px",
+                    top : (yTiles - y) * 64 + "px",
+                    overflow : "hidden",
+                })
+                tile.appendTo("#map");
+                var img = $("<div>");
+                img.css({
+                    position : "absolute",
+                    display : "block",
+                    top : 0,
+                    height : "7680px",
+                    width : "64px",
+                    backgroundSize : "100% 100%",
+                });
+                img.appendTo(tile)
+                row.push(img);
+            }
+            tiles.push(row);
         }
     }
     
@@ -196,6 +234,9 @@ Wolf.Renderer = (function() {
                 }
             }
         }
+
+        drawWalls(viewport, level);
+        // drawDoors();
         drawSprites(viewport, level, visibleTiles);
     }
     
@@ -248,6 +289,31 @@ Wolf.Renderer = (function() {
         if (image._left != left) {
             imgStyle.left = (image._left = left) + "px";
         }
+    }
+
+    function drawWalls(viewport, level){
+        var xTiles = Math.ceil(XRES / 64),
+            yTiles = Math.ceil(YRES / 64),
+            xBjTile = POS2TILE(viewport.x), 
+            yBjTile = POS2TILE(viewport.y),
+            xTileStart = xBjTile - Math.ceil(xTiles / 2),
+            yTileStart = yBjTile - Math.ceil(yTiles / 2),
+            textureSrc = "art/walls-shaded/64/walls.png";
+        // console.log(xbjTile, ybjTile, xTileStart, yTileStart);
+
+        // here we need to make an array of tiles that will hold textures/sprites
+        for(var y=0; y <= yTiles; y++){
+            for(var x=0; x <= xTiles; x++){
+                var img = tiles[y][x];
+                var texture = level.wallTexX[xTileStart + x][yTileStart + y];
+                var itop = -(texture - 1) * 64;
+                img.css({
+                    backgroundImage: "url(" + textureSrc + ")",
+                    top: itop + "px"
+                });
+            }
+        }
+
     }
 
     function drawWall(n, viewport, tracePoint, level) {
