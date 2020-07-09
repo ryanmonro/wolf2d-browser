@@ -114,7 +114,14 @@ $(document).ready(function() {
                 $("#title-screen").fadeOut(1500, function() {
                     Wolf.Input.init();
                     Wolf.Game.init();
-                    Wolf.Menu.show();
+                    // this is the quickstart
+                    if (Wolf.QUICKSTART) {
+                        gameState = Wolf.Game.startGame(1);
+                        Wolf.Game.startLevel(gameState, 0, 0);
+                    }
+                    else {
+                        Wolf.Menu.show();
+                    }
                 });
                 // preload non-essential art
                 Modernizr.load(files2);

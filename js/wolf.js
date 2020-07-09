@@ -35,6 +35,7 @@ var Wolf = {
     HUD_FACE_WIDTH      : 48,
     HUD_FACE_HEIGHT     : 64,
     HUD_WEAPON_WIDTH    : 256,
+    QUICKSTART          : true,
 
     
     NUMAREAS            : 37,   // number of areas

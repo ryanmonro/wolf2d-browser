@@ -542,6 +542,9 @@ Wolf.Game = (function() {
         $("#game .hud .bj").css({
             backgroundPosition : - (pic * Wolf.HUD_FACE_WIDTH) + "px 0"
         });
+        $("#map .bj").css({
+            backgroundPosition : - (pic * Wolf.HUD_FACE_WIDTH) + "px 0"
+        });
     }
 
     

@@ -307,6 +307,13 @@ Wolf.Renderer = (function() {
                     levelY = yTileStart + y,
                     door = level.state.doorMap[xTileStart + x][yTileStart + y],
                     img = tiles[y][x];
+                // make sure we're not out of bounds
+                img.css({
+                    left: "0px",
+                });
+                img.parent().css({
+                    transform: ""
+                });
                 if (levelX < 0 || levelX >= 64 || levelY < 0 || levelY >= 64) {
                     img.css({
                         backgroundImage: "",
@@ -314,7 +321,19 @@ Wolf.Renderer = (function() {
                     });
                     continue;
                 }
-                if(door !== 0){
+                if(door !== 0 && door.action !== 2){
+                    // console.log(door);
+                    if (Math.abs(door.action) == 1) {
+                        console.log(door);
+                        img.css({
+                            left: -(door.ticcount) + "px"
+                        });
+                    }
+                    if (door.vertical) {
+                        img.parent().css({
+                            transform: "rotate(90deg)"
+                        });    
+                    }
                     texture = door.texture + 1;
                     if (texture % 2 == 0) {
                         texture -= 1;

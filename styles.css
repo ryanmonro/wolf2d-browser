@@ -106,11 +106,8 @@ body {
     background-color : #111;
     overflow : hidden;
     position : absolute;
-    /*display: none;*/
     left : 16px;
     top : 8px;
-    /*width: 608px;
-    height: 304px;*/
     cursor : crosshair;
 }
 
@@ -197,7 +194,7 @@ body {
     background-image : url(art/hudbg.png);
 }
 
-#game .hud .bj {
+#game .hud .bj, #map .bj {
     position : absolute;
     width : 48px;
     height : 64px;
@@ -205,6 +202,14 @@ body {
     top : 9px;
     overflow : hidden;
     background-image : url(art/bj.png);
+}
+
+#map .bj {
+    top: 50%;
+    left: 50%;
+    /*display: none;*/
+    margin-left: -24px;
+    margin-top: -32px;
 }
 
 #game .hud .key1,
