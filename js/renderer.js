@@ -299,13 +299,30 @@ Wolf.Renderer = (function() {
             xTileStart = xBjTile - Math.ceil(xTiles / 2),
             yTileStart = yBjTile - Math.ceil(yTiles / 2),
             textureSrc = "art/walls-shaded/64/walls.png";
-        // console.log(xbjTile, ybjTile, xTileStart, yTileStart);
 
-        // here we need to make an array of tiles that will hold textures/sprites
+        // apply textures to walls surrounding BJ 
         for(var y=0; y <= yTiles; y++){
             for(var x=0; x <= xTiles; x++){
-                var img = tiles[y][x];
-                var texture = level.wallTexX[xTileStart + x][yTileStart + y];
+                var levelX = xTileStart + x,
+                    levelY = yTileStart + y,
+                    door = level.state.doorMap[xTileStart + x][yTileStart + y],
+                    img = tiles[y][x];
+                if (levelX < 0 || levelX >= 64 || levelY < 0 || levelY >= 64) {
+                    img.css({
+                        backgroundImage: "",
+                        top: "0px"
+                    });
+                    continue;
+                }
+                if(door !== 0){
+                    texture = door.texture + 1;
+                    if (texture % 2 == 0) {
+                        texture -= 1;
+                    }
+                }
+                else {
+                    var texture = level.wallTexX[xTileStart + x][yTileStart + y];
+                }
                 var itop = -(texture - 1) * 64;
                 img.css({
                     backgroundImage: "url(" + textureSrc + ")",
@@ -355,6 +372,8 @@ Wolf.Renderer = (function() {
         
         updateSlice(n, textureSrc, proc);
     }
+
+    // function drawDoors()
     
     function drawDoor(n, viewport, tracePoint, level) {
         var proc = processTrace(viewport, tracePoint),
