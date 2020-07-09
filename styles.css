@@ -208,7 +208,7 @@ border: white 1px solid;e .renderer div img,
 #map .bj {
     top: 50%;
     left: 50%;
-    border: white 1px solid;
+    /*border: white 1px solid;*/
     /*display: none;*/
     margin-left: -24px;
     margin-top: -32px;

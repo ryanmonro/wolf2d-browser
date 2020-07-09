@@ -118,8 +118,8 @@ Wolf.Renderer = (function() {
             .height(Wolf.YRES + "px");
         // // here we need to make an array of tiles that will hold textures/sprites
 
-        var xTiles = Math.ceil(XRES / 64),
-            yTiles = Math.ceil(YRES / 64);
+        var xTiles = Math.ceil(XRES / 64) + 1,
+            yTiles = Math.ceil(YRES / 64) + 1;
         
         // here we need to make an array of tiles that will hold textures/sprites
         for(var y=0; y <= yTiles; y++){
@@ -224,16 +224,16 @@ Wolf.Renderer = (function() {
     function draw(viewport, level, tracers, visibleTiles) {
         var n, tracePoint;
         
-        for (var n=0,len=tracers.length;n<len;++n) {
-            tracePoint = tracers[n];
-            if (!tracePoint.oob) {
-                if (tracePoint.flags & Wolf.TRACE_HIT_DOOR) {
-                    drawDoor(n, viewport, tracePoint, level);
-                } else {
-                    drawWall(n, viewport, tracePoint, level);
-                }
-            }
-        }
+        // for (var n=0,len=tracers.length;n<len;++n) {
+        //     tracePoint = tracers[n];
+        //     if (!tracePoint.oob) {
+        //         if (tracePoint.flags & Wolf.TRACE_HIT_DOOR) {
+        //             drawDoor(n, viewport, tracePoint, level);
+        //         } else {
+        //             drawWall(n, viewport, tracePoint, level);
+        //         }
+        //     }
+        // }
 
         drawWalls(viewport, level);
         drawSprites(viewport, level, visibleTiles);
@@ -291,12 +291,12 @@ Wolf.Renderer = (function() {
     }
 
     function drawWalls(viewport, level){
-        var xTiles = Math.ceil(XRES / 64),
-            yTiles = Math.ceil(YRES / 64),
+        var xTiles = Math.ceil(XRES / 64) + 1,
+            yTiles = Math.ceil(YRES / 64) + 1,
             xBjTile = POS2TILE(viewport.x), 
             yBjTile = POS2TILE(viewport.y),
-            xTileStart = xBjTile - Math.ceil(xTiles / 2),
-            yTileStart = yBjTile - Math.ceil(yTiles / 2),
+            xTileStart = xBjTile - Math.floor(xTiles / 2),
+            yTileStart = yBjTile - Math.floor(yTiles / 2),
             textureSrc = "art/walls-shaded/64/walls.png";
 
         var xBjTileFrac = (viewport.x - (xBjTile << Wolf.TILESHIFT)) / Wolf.TILEGLOBAL,
@@ -313,7 +313,7 @@ Wolf.Renderer = (function() {
                     left: "0px",
                 });
                 img.parent().css({
-                    top: (yTiles - y + yBjTileFrac - 0.62) * 64 + "px",
+                    top: (yTiles - y - 1+ yBjTileFrac - 0.62) * 64 + "px",
                     left: (x - xBjTileFrac - 0.125) * 64 + "px",
                     transform: ""
                 });
@@ -417,74 +417,76 @@ Wolf.Renderer = (function() {
             div, image,
             divStyle, imgStyle;
 
-        // console.log(level.sprites.length);
-        // return;
-      
-        // build visible sprites list
-        visibleSprites = Wolf.Sprites.createVisList(viewport, level, visibleTiles);
-        
-        for (n = 0; n < visibleSprites.length; ++n ){
-            vis = visibleSprites[n];
-            dist = vis.dist;
-            
-            if (dist < MINDIST / 2 ) {
-                //continue; // little hack to save speed & z-buffer
-            }
+        var xTiles = Math.ceil(XRES / 64) + 1,
+            yTiles = Math.ceil(YRES / 64) + 1,
+            xBjTile = POS2TILE(viewport.x), 
+            yBjTile = POS2TILE(viewport.y),
+            xTileStart = xBjTile - Math.floor(xTiles / 2),
+            yTileStart = yBjTile - Math.floor(yTiles / 2);
+        var xBjTileFrac = (viewport.x - (xBjTile << Wolf.TILESHIFT)) / Wolf.TILEGLOBAL,
+        yBjTileFrac = (viewport.y - (yBjTile << Wolf.TILESHIFT)) / Wolf.TILEGLOBAL;
 
-            // make sure sprite is loaded
-            if (!vis.sprite.div) {
-                loadSprite(vis.sprite)
-            }
-            
-            div = vis.sprite.div;
-            divStyle = div.style;
-            
-            image = div.image;
-            imgStyle = image.style;
-            
-            dx = vis.sprite.x  - viewport.x;
-            dy = vis.sprite.y  - viewport.y;
-            angle = atan2(dy, dx) - FINE2RAD(viewport.angle);
-            
-            //dist = dist * Math.cos(angle);
-           
-            size = (VIEW_DIST / dist * TILEGLOBAL) >> 0;
-
-            divStyle.display = "block";
-            divStyle.width = size + "px";
-            divStyle.height = size + "px";
-            
-            divStyle.left = (XRES / 2 - size / 2 - tan(angle) * VIEW_DIST) + "px";
-            
-            divStyle.top = (YRES / 2 - size / 2) + "px";
-
-            texture = Wolf.Sprites.getTexture(vis.sprite.tex[0]);
-            textureSrc = spritePath + texture.sheet;
-
-            if (image._src != textureSrc) {
-                image._src = textureSrc;
-                if (useBackgroundImage) {
-                    imgStyle.backgroundImage = "url(" + textureSrc + ")";
-                } else {
-                    image.src = textureSrc;
+        for(sprite of level.sprites){
+            var x = sprite.tile.x, 
+                y = sprite.tile.y;
+            if (x >= xTileStart && x <= xTileStart + xTiles &&
+                y >= yTileStart && y <= yTileStart + yTiles) {
+                // console.log(x, y);
+                // make sure sprite is loaded
+                if (!sprite.div) {
+                    loadSprite(sprite)
                 }
-            }
-
-            z = (maxDistZ - dist) >> 0;
-            width = texture.num * size;
-            left = -texture.idx * size;
                 
-            if (div._zIndex != z) {
-                divStyle.zIndex = div._zIndex = z;
-            }
-            if (image._width != width) {
-                imgStyle.width = (image._width = width) + "px";
-            }
-            if (image._height != size) {
-                imgStyle.height = (image._height = size) + "px";
-            }
-            if (image._left != left) {
-                imgStyle.left = (image._left = left) + "px";
+                div = sprite.div;
+                divStyle = div.style;
+                
+                image = div.image;
+                imgStyle = image.style;
+                   
+                size = 64;
+
+                var xSpriteTile = x - xTileStart,
+                    ySpriteTile = y - yTileStart;
+                console.log(xSpriteTile);
+                divStyle.display = "block";
+                divStyle.width = size + "px";
+                divStyle.height = size + "px";
+                
+                // divStyle.top = "64px";
+                // divStyle.left = "200px";
+                divStyle.top = (yTiles - ySpriteTile - 1+ yBjTileFrac - 0.62) * 64 + "px";
+                divStyle.left = (xSpriteTile - xBjTileFrac - 0.125) * 64 + "px";
+            
+                texture = Wolf.Sprites.getTexture(sprite.tex[0]);
+                textureSrc = spritePath + texture.sheet;
+
+                if (image._src != textureSrc) {
+                    image._src = textureSrc;
+                    if (useBackgroundImage) {
+                        imgStyle.backgroundImage = "url(" + textureSrc + ")";
+                    } else {
+                        image.src = textureSrc;
+                    }
+                }
+
+                z = (maxDistZ - dist) >> 0;
+                width = texture.num * size;
+                left = -texture.idx * size;
+                    
+                if (div._zIndex != z) {
+                    divStyle.zIndex = div._zIndex = z;
+                }
+                if (image._width != width) {
+                    imgStyle.width = (image._width = width) + "px";
+                }
+                if (image._height != size) {
+                    imgStyle.height = (image._height = size) + "px";
+                }
+                if (image._left != left) {
+                    imgStyle.left = (image._left = left) + "px";
+                }
+            } else if (sprite.div){
+                unloadSprite(sprite);
             }
         }
     }
@@ -523,7 +525,8 @@ Wolf.Renderer = (function() {
         div.appendChild(div.image);
         
         sprite.div = div;
-        $("#game .renderer").append(div);
+        // $("#game .renderer").append(div);
+        $("#map ").append(div);
     }
     
     return {
