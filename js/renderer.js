@@ -153,6 +153,8 @@ Wolf.Renderer = (function() {
     
     function reset() {
         $("#game .renderer .sprite").remove();
+        $("#map .sprite").remove();
+        console.log("removing")
         sprites = [];
         visibleSprites = [];
     }

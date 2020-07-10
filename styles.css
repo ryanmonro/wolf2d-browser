@@ -210,8 +210,11 @@ border: white 1px solid;e .renderer div img,
     left: 50%;
     /*border: white 1px solid;*/
     /*display: none;*/
-    margin-left: -24px;
-    margin-top: -32px;
+    margin-left: -12px;
+    margin-top: -16px;
+    width: 24px;
+    height: 32px;
+    background-size: cover;
 }
 
 #game .hud .key1,

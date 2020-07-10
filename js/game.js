@@ -246,6 +246,7 @@ Wolf.Game = (function() {
                             game.player.startScore = score;
                             game.level.state.startTime = (new Date).getTime();
                             game.level.state.elapsedTime = 0;
+                            Wolf.Renderer.reset();
                         } else {
                             gameOver(game);
                             return;
