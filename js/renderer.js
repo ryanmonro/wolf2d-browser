@@ -222,20 +222,7 @@ Wolf.Renderer = (function() {
     }
     
     function draw(viewport, level, tracers, visibleTiles) {
-        var n, tracePoint;
-        
-        // for (var n=0,len=tracers.length;n<len;++n) {
-        //     tracePoint = tracers[n];
-        //     if (!tracePoint.oob) {
-        //         if (tracePoint.flags & Wolf.TRACE_HIT_DOOR) {
-        //             drawDoor(n, viewport, tracePoint, level);
-        //         } else {
-        //             drawWall(n, viewport, tracePoint, level);
-        //         }
-        //     }
-        // }
-
-        drawWalls(viewport, level);
+        drawWalls(viewport, level); // also draws doors
         drawSprites(viewport, level, visibleTiles);
     }
     
@@ -299,24 +286,24 @@ Wolf.Renderer = (function() {
             yTileStart = yBjTile - Math.floor(yTiles / 2),
             textureSrc = "art/walls-shaded/64/walls.png";
 
-        var xBjTileFrac = (viewport.x - (xBjTile << Wolf.TILESHIFT)) / Wolf.TILEGLOBAL,
-            yBjTileFrac = (viewport.y - (yBjTile << Wolf.TILESHIFT)) / Wolf.TILEGLOBAL;
-        // apply textures to walls surrounding BJ 
+        // apply textures to tiles surrounding BJ 
         for(var y=0; y <= yTiles; y++){
             for(var x=0; x <= xTiles; x++){
                 var levelX = xTileStart + x,
                     levelY = yTileStart + y,
-                    door = level.state.doorMap[xTileStart + x][yTileStart + y],
-                    img = tiles[y][x];
-                // make sure we're not out of bounds
+                    img = tiles[y][x],
+                    texture,
+                    door = 0,
+                    {top, left} = topLeftForPos(Wolf.TILE2POS(levelX), Wolf.TILE2POS(levelY), viewport);
                 img.css({
                     left: "0px",
                 });
                 img.parent().css({
-                    top: (yTiles - y - 1+ yBjTileFrac - 0.62) * 64 + "px",
-                    left: (x - xBjTileFrac - 0.125) * 64 + "px",
+                    top: top + "px",
+                    left: left + "px",
                     transform: ""
                 });
+                // make sure we're not out of bounds
                 if (levelX < 0 || levelX >= 64 || levelY < 0 || levelY >= 64) {
                     img.css({
                         backgroundImage: "",
@@ -324,6 +311,8 @@ Wolf.Renderer = (function() {
                     });
                     continue;
                 }
+                // check if tile is a door
+                door = level.state.doorMap[levelX][levelY];
                 if(door !== 0 && door.action !== 2){
                     if (Math.abs(door.action) == 1) {
                         img.css({
@@ -341,7 +330,7 @@ Wolf.Renderer = (function() {
                     }
                 }
                 else {
-                    var texture = level.wallTexX[xTileStart + x][yTileStart + y];
+                    texture = level.wallTexX[xTileStart + x][yTileStart + y];
                 }
                 var itop = -(texture - 1) * 64;
                 img.css({
@@ -353,61 +342,14 @@ Wolf.Renderer = (function() {
 
     }
 
-    function drawWall(n, viewport, tracePoint, level) {
-        var x = tracePoint.tileX,
-            y = tracePoint.tileY,
-            vx = POS2TILE(viewport.x),
-            vy = POS2TILE(viewport.y),
-            tileMap = level.tileMap,
-            proc = processTrace(viewport, tracePoint),
-            texture = proc.vert ? level.wallTexX[x][y] : level.wallTexY[x][y],
-            textureSrc;
-        
-        // door sides
-        if (tracePoint.flags & TRACE_HIT_VERT) {
-            if (x >= vx && tileMap[x-1][y] & DOOR_TILE) {
-                texture = TEX_PLATE;
-            }
-            if (x < vx && tileMap[x+1][y] & DOOR_TILE) {
-                texture = TEX_PLATE;
-            }
-        } else {
-            if (y >= vy && tileMap[x][y-1] & DOOR_TILE) {
-                texture = TEX_PLATE;
-            }
-            if (y < vy && tileMap[x][y+1] & DOOR_TILE) {
-                texture = TEX_PLATE;
-            }
-        }
-        
-        texture++;
-        
-        proc.texture = texture;
-        
-        if (texture % 2 == 0) {
-            texture--;
-        }
-        textureSrc = texturePath + "w_" + texture + ".png";
-        
-        updateSlice(n, textureSrc, proc);
-    }
-    
-    function drawDoor(n, viewport, tracePoint, level) {
-        var proc = processTrace(viewport, tracePoint),
-            texture, textureSrc;
-            
-        //texture = Wolf.TEX_DDOOR + 1;
-        texture = level.state.doorMap[tracePoint.tileX][tracePoint.tileY].texture + 1;
-        
-        proc.texture = texture;
-        
-        if (texture % 2 == 0) {
-            texture -= 1;
-        }
-        
-        textureSrc = texturePath + "w_" + texture + ".png";
-        
-        updateSlice(n, textureSrc, proc);
+    function topLeftForPos(x, y, viewport){
+        var bjCenterX = Wolf.XRES / 2,
+            bjCenterY = Wolf.YRES / 2,
+            bjTop = Wolf.YRES / 2 + 32,
+            bjLeft = Wolf.XRES / 2 - 32,
+            dx = x - viewport.x,
+            dy = y - viewport.y;
+        return {top: Wolf.YRES - (bjTop + (64 * dy/TILEGLOBAL)), left: bjLeft + (64 * dx/TILEGLOBAL)};
     }
         
     function drawSprites(viewport, level, visibleTiles) {
@@ -423,15 +365,12 @@ Wolf.Renderer = (function() {
             yBjTile = POS2TILE(viewport.y),
             xTileStart = xBjTile - Math.floor(xTiles / 2),
             yTileStart = yBjTile - Math.floor(yTiles / 2);
-        var xBjTileFrac = (viewport.x - (xBjTile << Wolf.TILESHIFT)) / Wolf.TILEGLOBAL,
-        yBjTileFrac = (viewport.y - (yBjTile << Wolf.TILESHIFT)) / Wolf.TILEGLOBAL;
-
+        
         for(sprite of level.sprites){
             var x = sprite.tile.x, 
                 y = sprite.tile.y;
             if (x >= xTileStart && x <= xTileStart + xTiles &&
                 y >= yTileStart && y <= yTileStart + yTiles) {
-                // console.log(x, y);
                 // make sure sprite is loaded
                 if (!sprite.div) {
                     loadSprite(sprite)
@@ -447,15 +386,13 @@ Wolf.Renderer = (function() {
 
                 var xSpriteTile = x - xTileStart,
                     ySpriteTile = y - yTileStart;
-                console.log(xSpriteTile);
                 divStyle.display = "block";
                 divStyle.width = size + "px";
                 divStyle.height = size + "px";
                 
-                // divStyle.top = "64px";
-                // divStyle.left = "200px";
-                divStyle.top = (yTiles - ySpriteTile - 1+ yBjTileFrac - 0.62) * 64 + "px";
-                divStyle.left = (xSpriteTile - xBjTileFrac - 0.125) * 64 + "px";
+                var {top, left} = topLeftForPos(sprite.x, sprite.y, viewport);
+                divStyle.top = top + "px";
+                divStyle.left = left + "px";
             
                 texture = Wolf.Sprites.getTexture(sprite.tex[0]);
                 textureSrc = spritePath + texture.sheet;
@@ -486,7 +423,9 @@ Wolf.Renderer = (function() {
                     imgStyle.left = (image._left = left) + "px";
                 }
             } else if (sprite.div){
+                // Wolf.Sprites.remove(level, sprite);
                 unloadSprite(sprite);
+
             }
         }
     }
@@ -525,7 +464,6 @@ Wolf.Renderer = (function() {
         div.appendChild(div.image);
         
         sprite.div = div;
-        // $("#game .renderer").append(div);
         $("#map ").append(div);
     }
     
