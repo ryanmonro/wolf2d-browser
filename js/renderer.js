@@ -84,9 +84,6 @@ Wolf.Renderer = (function() {
             .width(Wolf.XRES + "px")
             .height(Wolf.YRES + "px");
 
-        $("#map")
-            .width(Wolf.XRES + "px")
-            .height(Wolf.YRES + "px");
         // // here we need to make an array of tiles that will hold textures/sprites
 
         var xTiles = Math.ceil(XRES / 64) + 1,
@@ -105,7 +102,7 @@ Wolf.Renderer = (function() {
                     top : (yTiles - y) * 64 + "px",
                     overflow : "hidden",
                 })
-                tile.appendTo("#map");
+                tile.appendTo("#game .renderer");
                 var img = $("<div>");
                 img.css({
                     position : "absolute",
@@ -124,7 +121,6 @@ Wolf.Renderer = (function() {
     
     function reset() {
         $("#game .renderer .sprite").remove();
-        $("#map .sprite").remove();
         sprites = [];
         visibleSprites = [];
     }
@@ -361,7 +357,7 @@ Wolf.Renderer = (function() {
     function drawWeapon(viewport){
         var bjCenterX = Wolf.XRES / 2,
             bjCenterY = Wolf.YRES / 2,
-            weapon = $("#map .player-weapon"),
+            weapon = $("#game .renderer .player-weapon"),
             angle = Wolf.FINE2DEG(viewport.angle),
             radius = 32,
             h = radius * Wolf.Math.SinTable[viewport.angle],
@@ -418,7 +414,7 @@ Wolf.Renderer = (function() {
         div.appendChild(div.image);
         
         sprite.div = div;
-        $("#map ").append(div);
+        $("#game .renderer").append(div);
     }
     
     return {

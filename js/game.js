@@ -440,14 +440,14 @@ Wolf.Game = (function() {
             frame = player.weapon * 4 + player.weaponFrame;
 
         if (player.playstate == Wolf.ex_dead || player.playstate == Wolf.ex_victory) {
+            // $("#game .renderer .player-weapon").css("display", "none");
             $("#game .renderer .player-weapon").css("display", "none");
-            $("#map .player-weapon").css("display", "none");
         } else {
+            // $("#game .renderer .player-weapon").css({
+            //     display : "block",
+            //     backgroundPosition : - (frame * Wolf.HUD_WEAPON_WIDTH) + "px 0"
+            // });
             $("#game .renderer .player-weapon").css({
-                display : "block",
-                backgroundPosition : - (frame * Wolf.HUD_WEAPON_WIDTH) + "px 0"
-            });
-            $("#map .player-weapon").css({
                 display : "block",
                 backgroundPosition : - (frame * Wolf.MAP_WEAPON_WIDTH) + "px 0"
             });
@@ -486,13 +486,6 @@ Wolf.Game = (function() {
                 y : player.position.y,
                 angle : player.angle
             };
-
-        // console.log(player.angle);
-        
-        // var res = Wolf.Raycaster.traceRays(viewport, level);
-        // var visibles = 0;
-        // res.visibleTiles.forEach((r)=>r.forEach((t)=>t && visibles++))
-        // console.log(visibles);
         Wolf.Renderer.clear();
         Wolf.Renderer.draw(viewport, level);
     }
@@ -548,7 +541,7 @@ Wolf.Game = (function() {
         $("#game .hud .bj").css({
             backgroundPosition : - (pic * Wolf.HUD_FACE_WIDTH) + "px 0"
         });
-        $("#map .bj").css({
+        $("#game .renderer .bj").css({
             backgroundPosition : - (pic * Wolf.HUD_FACE_WIDTH / 2) + "px 0"
         });
     }
