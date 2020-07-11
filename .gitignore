@@ -6,3 +6,5 @@ sfx/
 lsfx/
 music/
 art/
+# Local Netlify folder
+.netlify
