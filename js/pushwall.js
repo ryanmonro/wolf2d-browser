@@ -78,8 +78,8 @@ Wolf.PushWall = (function() {
         // good way to avoid stuckness; [un]comment one more down!
         // it makes a tile behind pushwall unpassable
         level.tileMap[x + dx][y + dy] |= Wolf.PUSHWALL_TILE;
-        level.wallTexX[x + dx][y + dy] = level.wallTexX[x][y];
-        level.wallTexY[x + dx][y + dy] = level.wallTexY[x][y];
+        // level.wallTexX[x + dx][y + dy] = level.wallTexX[x][y];
+        // level.wallTexY[x + dx][y + dy] = level.wallTexY[x][y];
 
         // write down PWall info
         PWall.active = true;
@@ -111,6 +111,9 @@ Wolf.PushWall = (function() {
         PWall.tilesMoved++;
         // Free tile
         level.tileMap[PWall.x][PWall.y] &= (~Wolf.PUSHWALL_TILE);
+        level.wallTexX[PWall.x + PWall.dx][PWall.y + PWall.dy] = level.wallTexX[PWall.x][PWall.y];
+        // level.wallTexY[x + dx][y + dy] = level.wallTexY[x][y];
+        level.wallTexX[PWall.x][PWall.y] = 0;
         // Occupy new tile
         PWall.x += PWall.dx;
         PWall.y += PWall.dy;
@@ -126,8 +129,8 @@ Wolf.PushWall = (function() {
             level.tileMap[PWall.x + PWall.dx][PWall.y + PWall.dy] |= Wolf.PUSHWALL_TILE;
             
             // Not sure if this is right but it fixed an issue with the pushwall texture changing mid-slide.
-            level.wallTexX[PWall.x + PWall.dx][PWall.y + PWall.dy] = PWall.texX;
-            level.wallTexY[PWall.x + PWall.dx][PWall.y + PWall.dy] = PWall.texY;
+            // level.wallTexX[PWall.x + PWall.dx][PWall.y + PWall.dy] = PWall.texX;
+            // level.wallTexY[PWall.x + PWall.dx][PWall.y + PWall.dy] = PWall.texY;
         }
     }
     

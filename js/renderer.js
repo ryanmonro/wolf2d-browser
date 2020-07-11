@@ -337,7 +337,21 @@ Wolf.Renderer = (function() {
                     }
                 }
                 else {
-                    texture = level.wallTexX[xTileStart + x][yTileStart + y];
+                    texture = level.wallTexX[levelX][levelY];
+                    if (level.tileMap[levelX][levelY] & Wolf.PUSHWALL_TILE) {
+                        var pwall = Wolf.PushWall.get(),
+                            offset = pwall.pointsMoved / 128;
+                        console.log(offset);
+                        img.parent().css({
+                            marginLeft: pwall.dx * 64 * offset + "px",
+                            marginTop: -pwall.dy * 64 * offset + "px"
+                        });
+                    } else {
+                        img.parent().css({
+                            marginLeft: 0,
+                            marginTop: 0
+                        });
+                    }
                 }
                 var itop = -(texture - 1) * 64;
                 img.css({
