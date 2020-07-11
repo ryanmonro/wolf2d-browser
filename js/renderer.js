@@ -84,35 +84,6 @@ Wolf.Renderer = (function() {
             .width(Wolf.XRES + "px")
             .height(Wolf.YRES + "px");
 
-        for (x=0; x<Wolf.XRES; x += Wolf.SLICE_WIDTH) {
-            slice = $("<div>");
-            slice.css({
-                position : "absolute",
-                width : Wolf.SLICE_WIDTH + "px",
-                height : Wolf.YRES + "px",
-                left : x + "px",
-                top : 0,
-                overflow : "hidden"
-            });
-            slice.appendTo("#game .renderer");
-
-            image = useBackgroundImage ? $("<div>") : $("<img>");
-            
-            image.css({
-                position : "absolute",
-                display : "block",
-                top : 0,
-                height : 0,
-                width : Wolf.SLICE_WIDTH * Wolf.WALL_TEXTURE_WIDTH + "px",
-                backgroundSize : "100% 100%"
-            });
-            
-            var sliceElement = slice[0];
-            sliceElement.texture = image[0];
-            sliceElement.appendChild(sliceElement.texture);
-            slices.push(sliceElement);
-        }
-
         $("#map")
             .width(Wolf.XRES + "px")
             .height(Wolf.YRES + "px");
@@ -222,61 +193,10 @@ Wolf.Renderer = (function() {
         }
     }
     
-    function draw(viewport, level, tracers, visibleTiles) {
+    function draw(viewport, level) {
         drawWalls(viewport, level); // also draws doors
-        drawSprites(viewport, level, visibleTiles);
+        drawSprites(viewport, level);
         drawWeapon(viewport);
-    }
-
-    function updateSlice(n, textureSrc, proc) {
-        var slice = slices[n],
-            image = slice.texture,
-            sliceStyle = slice.style,
-            imgStyle = image.style,
-            top = (Wolf.YRES - proc.h) / 2,
-            left = -(proc.offset) >> 0,
-            height = proc.h,
-            z = (maxDistZ - proc.dist) >> 0,
-            itop;
-            
-        if (Wolf.ISXP && Wolf.ISFIREFOX) {
-            itop = (proc.texture % 2) ? 0 : -height;
-        } else {
-            itop = -(proc.texture-1) * height;
-            textureSrc = "art/walls-shaded/64/walls.png";
-        }
-       
-        if (image._src != textureSrc) {
-            image._src = textureSrc;
-            if (useBackgroundImage) {
-                imgStyle.backgroundImage = "url(" + textureSrc + ")";
-            } else {
-                image.src = textureSrc;
-            }
-        }
-        
-        if (slice._zIndex != z) {
-            sliceStyle.zIndex = slice._zIndex = z;
-        }
-        if (image._height != height) {
-            sliceStyle.height = (image._height = height) + "px";
-            if (Wolf.ISXP && Wolf.ISFIREFOX) {
-                imgStyle.height = (height * 2) + "px";
-            } else {
-                imgStyle.height = (height * 120) + "px";
-            }
-        }
-        
-        if (image._itop != itop) {
-            imgStyle.top = (image._itop = itop) + "px";
-        }
-        
-        if (image._top != top) {
-            sliceStyle.top = (image._top = top) + "px";
-        }
-        if (image._left != left) {
-            imgStyle.left = (image._left = left) + "px";
-        }
     }
 
     function drawWalls(viewport, level){
@@ -362,7 +282,7 @@ Wolf.Renderer = (function() {
 
     }
         
-    function drawSprites(viewport, level, visibleTiles) {
+    function drawSprites(viewport, level) {
         var vis, n,
             dist, dx, dy, angle,
             z, width, size,
