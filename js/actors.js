@@ -276,18 +276,18 @@ Wolf.Actors = (function() {
             Wolf.Sprites.setPos(level, guard.sprite, guard.x, guard.y, guard.angle);
             
             tex = Wolf.objstate[guard.type][guard.state].texture;
-            
             if (Wolf.objstate[guard.type][guard.state].rotate) {
                 if (guard.type == Wolf.en_rocket || guard.type == Wolf.en_hrocket) {
-                    tex += r_add8dir[Wolf.Math.get8dir( Wolf.Angle.distCW(Wolf.FINE2RAD(player.angle), Wolf.FINE2RAD(guard.angle)))];                
+                    tex += r_add8dir[Wolf.Math.get8dir(Math.PI - (Wolf.Angle.normalize(Wolf.FINE2RAD(guard.angle) + Math.PI / 2)))];                
                 } else {
-                    tex += add8dir[Wolf.Math.get8dir( Wolf.Angle.distCW(Wolf.FINE2RAD(player.angle), Wolf.FINE2RAD(guard.angle)))];                
+                    tex += add8dir[Wolf.Math.get8dir(Math.PI - (Wolf.Angle.normalize(Wolf.FINE2RAD(guard.angle) + Math.PI / 2)))];                                
                 }
             }
             Wolf.Sprites.setTex(level, guard.sprite, 0, tex);
         }
 
         for (n = 0 ; n < level.state.numGuards ; ++n ) {
+            // console.log(level.state.guards[n].angle);
             if (level.state.guards[n]) {
                 liveGuards.push(level.state.guards[n]);
             }
