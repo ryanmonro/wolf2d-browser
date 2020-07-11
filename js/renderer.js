@@ -323,8 +323,13 @@ Wolf.Renderer = (function() {
                     }
                     if (door.vertical) {
                         img.parent().css({
-                            transform: "rotate(90deg)"
-                        });    
+                            // transform: "scaleX(0.75) rotate(90deg)",
+                            transform: "rotate(90deg)",
+                        });
+                    // } else {
+                    //     img.parent().css({
+                    //         transform: "scaleY(0.75)",
+                    //     });
                     }
                     texture = door.texture + 1;
                     if (texture % 2 == 0) {
