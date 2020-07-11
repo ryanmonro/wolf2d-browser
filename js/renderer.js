@@ -224,12 +224,10 @@ Wolf.Renderer = (function() {
                 // make sure we're not out of bounds
                 if (levelX < 0 || levelX >= 64 || levelY < 0 || levelY >= 64) {
                     img.css({
-                        backgroundImage: "",
-                        top: "0px"
+                        top: "64px"
                     });
                     continue;
                 }
-                // check if tile is a door
                 door = level.state.doorMap[levelX][levelY];
                 if(door !== 0 && door.action !== 2){
                     if (Math.abs(door.action) == 1) {
@@ -239,6 +237,7 @@ Wolf.Renderer = (function() {
                     }
                     if (door.vertical) {
                         img.parent().css({
+                            // this and the else case make the doors thinner so BJ doesn't overlap with them but it looks worse
                             // transform: "scaleX(0.75) rotate(90deg)",
                             transform: "rotate(90deg)",
                         });

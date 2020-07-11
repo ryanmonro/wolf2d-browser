@@ -830,6 +830,8 @@ Wolf.Game = (function() {
             
         playing = false;
 
+        Wolf.Renderer.reset();
+
         Wolf.Sound.startMusic("music/URAHERO.ogg");
         
         $("#game .renderer").hide();
