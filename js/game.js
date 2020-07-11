@@ -549,7 +549,7 @@ Wolf.Game = (function() {
             backgroundPosition : - (pic * Wolf.HUD_FACE_WIDTH) + "px 0"
         });
         $("#map .bj").css({
-            backgroundPosition : - (pic * Wolf.HUD_FACE_WIDTH) + "px 0"
+            backgroundPosition : - (pic * Wolf.HUD_FACE_WIDTH / 2) + "px 0"
         });
     }
 
