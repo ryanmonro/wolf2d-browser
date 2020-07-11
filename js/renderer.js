@@ -122,9 +122,9 @@ Wolf.Renderer = (function() {
             yTiles = Math.ceil(YRES / 64) + 1;
         
         // here we need to make an array of tiles that will hold textures/sprites
-        for(var y=0; y <= yTiles; y++){
-            var row = [];
-            for(var x=0; x <= xTiles; x++){
+        for(var x=0; x <= xTiles; x++){
+            var col = [];
+            for(var y=0; y <= yTiles; y++){
                 var tile = $("<div>");
                 tile.css({
                     position : "absolute",
@@ -145,9 +145,9 @@ Wolf.Renderer = (function() {
                     backgroundSize : "100% 100%",
                 });
                 img.appendTo(tile)
-                row.push(img);
+                col.push(img);
             }
-            tiles.push(row);
+            tiles.push(col);
         }
     }
     
@@ -293,7 +293,7 @@ Wolf.Renderer = (function() {
             for(var x=0; x <= xTiles; x++){
                 var levelX = xTileStart + x,
                     levelY = yTileStart + y,
-                    img = tiles[y][x],
+                    img = tiles[x][y],
                     texture,
                     door = 0,
                     {top, left} = topLeftForPos(Wolf.TILE2POS(levelX), Wolf.TILE2POS(levelY), viewport);
@@ -341,7 +341,6 @@ Wolf.Renderer = (function() {
                     if (level.tileMap[levelX][levelY] & Wolf.PUSHWALL_TILE) {
                         var pwall = Wolf.PushWall.get(),
                             offset = pwall.pointsMoved / 128;
-                        console.log(offset);
                         img.parent().css({
                             marginLeft: pwall.dx * 64 * offset + "px",
                             marginTop: -pwall.dy * 64 * offset + "px"
