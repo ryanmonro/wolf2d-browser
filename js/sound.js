@@ -54,8 +54,8 @@ Wolf.Sound = (function() {
     var sounds = {},
         audioElements = [],
         currentMusic,
-        soundEnabled = false,
-        musicEnabled = false,
+        soundEnabled = true,
+        musicEnabled = true,
         music,
         ext, 
         exts = ["ogg", "mp3"];
