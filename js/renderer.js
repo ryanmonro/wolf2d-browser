@@ -226,8 +226,9 @@ Wolf.Renderer = (function() {
     function draw(viewport, level, tracers, visibleTiles) {
         drawWalls(viewport, level); // also draws doors
         drawSprites(viewport, level, visibleTiles);
+        drawWeapon(viewport);
     }
-    
+
     function updateSlice(n, textureSrc, proc) {
         var slice = slices[n],
             image = slice.texture,
@@ -343,16 +344,6 @@ Wolf.Renderer = (function() {
         }
 
     }
-
-    function topLeftForPos(x, y, viewport){
-        var bjCenterX = Wolf.XRES / 2,
-            bjCenterY = Wolf.YRES / 2,
-            bjTop = Wolf.YRES / 2 + 32,
-            bjLeft = Wolf.XRES / 2 - 32,
-            dx = x - viewport.x,
-            dy = y - viewport.y;
-        return {top: Wolf.YRES - (bjTop + (64 * dy/TILEGLOBAL)), left: bjLeft + (64 * dx/TILEGLOBAL)};
-    }
         
     function drawSprites(viewport, level, visibleTiles) {
         var vis, n,
@@ -425,11 +416,35 @@ Wolf.Renderer = (function() {
                     imgStyle.left = (image._left = left) + "px";
                 }
             } else if (sprite.div){
-                // Wolf.Sprites.remove(level, sprite);
                 unloadSprite(sprite);
-
             }
         }
+    }
+
+    function drawWeapon(viewport){
+        var bjCenterX = Wolf.XRES / 2,
+            bjCenterY = Wolf.YRES / 2,
+            weapon = $("#map .player-weapon"),
+            angle = Wolf.FINE2DEG(viewport.angle),
+            radius = 32,
+            h = radius * Wolf.Math.SinTable[viewport.angle],
+            w = radius * Wolf.Math.CosTable[viewport.angle];
+        weapon.css({
+            top: bjCenterY - h + "px",
+            left: bjCenterX + w + "px",
+            transform: "rotate(" + (90 - angle) + "deg)"
+        });
+
+    }
+
+    function topLeftForPos(x, y, viewport){
+        var bjCenterX = Wolf.XRES / 2,
+            bjCenterY = Wolf.YRES / 2,
+            bjTop = Wolf.YRES / 2 + 32,
+            bjLeft = Wolf.XRES / 2 - 32,
+            dx = x - viewport.x,
+            dy = y - viewport.y;
+        return {top: Wolf.YRES - (bjTop + (64 * dy/TILEGLOBAL)), left: bjLeft + (64 * dx/TILEGLOBAL)};
     }
     
     function unloadSprite(sprite) {

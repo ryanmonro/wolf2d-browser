@@ -35,6 +35,7 @@ var Wolf = {
     HUD_FACE_WIDTH      : 48,
     HUD_FACE_HEIGHT     : 64,
     HUD_WEAPON_WIDTH    : 256,
+    MAP_WEAPON_WIDTH    : 32,
     QUICKSTART          : true, // skip straight to e1m1
 
     

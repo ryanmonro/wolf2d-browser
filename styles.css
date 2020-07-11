@@ -208,12 +208,23 @@ border: white 1px solid;e .renderer div img,
 #map .bj {
     top: 50%;
     left: 50%;
-    /*border: white 1px solid;*/
     /*display: none;*/
     margin-left: -12px;
     margin-top: -16px;
     width: 24px;
     height: 32px;
+    background-size: cover;
+}
+
+#map .player-weapon {
+    width : 32px;
+    height : 32px;
+    /*border: white 1px solid;*/
+    margin-top: -16px;
+    margin-left: -16px;
+    position : absolute;
+    background-image : url(art/attack.png);
+    background-repeat : no-repeat;
     background-size: cover;
 }
 

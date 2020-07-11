@@ -441,10 +441,15 @@ Wolf.Game = (function() {
 
         if (player.playstate == Wolf.ex_dead || player.playstate == Wolf.ex_victory) {
             $("#game .renderer .player-weapon").css("display", "none");
+            $("#map .player-weapon").css("display", "none");
         } else {
             $("#game .renderer .player-weapon").css({
                 display : "block",
                 backgroundPosition : - (frame * Wolf.HUD_WEAPON_WIDTH) + "px 0"
+            });
+            $("#map .player-weapon").css({
+                display : "block",
+                backgroundPosition : - (frame * Wolf.MAP_WEAPON_WIDTH) + "px 0"
             });
         }
         
